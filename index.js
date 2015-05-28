@@ -1,5 +1,5 @@
 var m = require('./lib/core.js'),
-    IntlPolyfill = m.default;
+    IntlPolyfill = m['default'];
 
 // add locale data for all locales into runtime
 global.IntlPolyfill = IntlPolyfill;
