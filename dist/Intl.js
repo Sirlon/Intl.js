@@ -92,369 +92,400 @@
     var $$exp$$expSingletonDupes = RegExp('^(?!x).*?-('+$$exp$$singleton+')-(?:\\w+-(?!x-))*\\1\\b', 'i');
 
     var $$exp$$expExtSequences = RegExp('-'+$$exp$$extension, 'ig');
-    var $$cldr$$expDTComponents = /(?:[Eec]{1,6}|G{1,5}|(?:[yYu]+|U{1,5})|[ML]{1,5}|d{1,2}|a|[hkHK]{1,2}|m{1,2}|s{1,2}|z{1,4})(?=([^']*'[^']*')*[^']*$)/g;
+    var  $$cldr$$expDTComponents = /(?:[Eec]{1,6}|G{1,5}|(?:[yYu]+|U{1,5})|[ML]{1,5}|d{1,2}|a|[hkHK]{1,2}|m{1,2}|s{1,2}|z{1,4})(?=([^']*'[^']*')*[^']*$)/g;
 
     // Skip over patterns with these datetime components
-    var $$cldr$$unwantedDTCs = /[QxXVOvZASjgFDwWIQqH]/;
+    var  $$cldr$$unwantedDTCs = /[QxXVOvZASjgFDwWIQqH]/;
 
     // Maps the number of characters in a CLDR pattern to the specification
-    var $$cldr$$dtcLengthMap = {
-            month:   [ 'numeric', '2-digit', 'short', 'long', 'narrow' ],
-            weekday: [ 'short', 'short', 'short', 'long', 'narrow' ],
-            era:     [ 'short', 'short', 'short', 'long', 'narrow' ]
-        };
+    var  $$cldr$$dtcLengthMap = {
+      month:   [ 'numeric', '2-digit', 'short', 'long', 'narrow' ],
+      weekday: [ 'short', 'short', 'short', 'long', 'narrow' ],
+      era:     [ 'short', 'short', 'short', 'long', 'narrow' ]
+    };
 
-    var $$cldr$$dtKeys = ["weekday", "era", "year", "month", "day"];
-    var $$cldr$$tmKeys = ["hour", "minite", "second", "timeZoneName"];
+    var  $$cldr$$dtKeys = ["weekday", "era", "year", "month", "day"];
+    var  $$cldr$$tmKeys = ["hour", "minite", "second", "timeZoneName"];
 
-    function $$cldr$$isDateFormatOnly(obj) {
-        for (var i = 0; i < $$cldr$$tmKeys.length; i += 1) {
-            if (obj.hasOwnProperty($$cldr$$tmKeys[i])) {
-                return false;
-            }
+    function  $$cldr$$isDateFormatOnly(obj) {
+      for (var i = 0; i <  $$cldr$$tmKeys.length; i += 1) {
+        if (obj.hasOwnProperty( $$cldr$$tmKeys[i])) {
+          return false;
         }
-        return true;
+      }
+      return true;
     }
 
-    function $$cldr$$isTimeFormatOnly(obj) {
-        for (var i = 0; i < $$cldr$$dtKeys.length; i += 1) {
-            if (obj.hasOwnProperty($$cldr$$dtKeys[i])) {
-                return false;
-            }
+    function  $$cldr$$isTimeFormatOnly(obj) {
+      for (var i = 0; i <  $$cldr$$dtKeys.length; i += 1) {
+        if (obj.hasOwnProperty( $$cldr$$dtKeys[i])) {
+          return false;
         }
-        return true;
+      }
+      return true;
     }
 
-    function $$cldr$$createDateTimeFormat(format) {
-        if ($$cldr$$unwantedDTCs.test(format))
-            return undefined;
+    function  $$cldr$$createDateTimeFormat(format) {
+      if ( $$cldr$$unwantedDTCs.test(format))
+        return undefined;
 
-        var formatObj = {};
+      var formatObj = {};
 
-        // Replace the pattern string with the one required by the specification, whilst
-        // at the same time evaluating it for the subsets and formats
-        formatObj.pattern = format.replace($$cldr$$expDTComponents, function ($0) {
-            // See which symbol we're dealing with
-            switch ($0.charAt(0)) {
-                case 'E':
-                case 'e':
-                case 'c':
-                    formatObj.weekday = $$cldr$$dtcLengthMap.weekday[$0.length-1];
-                    return '{weekday}';
+      // Replace the pattern string with the one required by the specification, whilst
+      // at the same time evaluating it for the subsets and formats
+      formatObj.pattern = format.replace( $$cldr$$expDTComponents, function ($0) {
+      // See which symbol we're dealing with
+        switch ($0.charAt(0)) {
+          case 'E':
+          case 'e':
+          case 'c':
+            formatObj.weekday =  $$cldr$$dtcLengthMap.weekday[$0.length-1];
+            return '{weekday}';
 
-                // Not supported yet
-                case 'G':
-                    formatObj.era = $$cldr$$dtcLengthMap.era[$0.length-1];
-                    return '{era}';
+            // Not supported yet
+          case 'G':
+            formatObj.era =  $$cldr$$dtcLengthMap.era[$0.length-1];
+            return '{era}';
 
-                case 'y':
-                case 'Y':
-                case 'u':
-                case 'U':
-                    formatObj.year = $0.length === 2 ? '2-digit' : 'numeric';
-                    return '{year}';
+          case 'y':
+          case 'Y':
+          case 'u':
+          case 'U':
+            formatObj.year = $0.length === 2 ? '2-digit' : 'numeric';
+            return '{year}';
 
-                case 'M':
-                case 'L':
-                    formatObj.month = $$cldr$$dtcLengthMap.month[$0.length-1];
-                    return '{month}';
+          case 'M':
+          case 'L':
+            formatObj.month =  $$cldr$$dtcLengthMap.month[$0.length-1];
+            return '{month}';
 
-                case 'd':
-                    formatObj.day = $0.length === 2 ? '2-digit' : 'numeric';
-                    return '{day}';
+          case 'd':
+            formatObj.day = $0.length === 2 ? '2-digit' : 'numeric';
+            return '{day}';
 
-                case 'a':
-                    return '{ampm}';
+          case 'a':
+            return '{ampm}';
 
-                case 'h':
-                case 'H':
-                case 'k':
-                case 'K':
-                    formatObj.hour = $0.length === 2 ? '2-digit' : 'numeric';
-                    return '{hour}';
+          case 'h':
+          case 'H':
+          case 'k':
+          case 'K':
+            formatObj.hour = $0.length === 2 ? '2-digit' : 'numeric';
+            return '{hour}';
 
-                case 'm':
-                    formatObj.minute = $0.length === 2 ? '2-digit' : 'numeric';
-                    return '{minute}';
+          case 'm':
+            formatObj.minute = $0.length === 2 ? '2-digit' : 'numeric';
+            return '{minute}';
 
-                case 's':
-                    formatObj.second = $0.length === 2 ? '2-digit' : 'numeric';
-                    return '{second}';
+          case 's':
+            formatObj.second = $0.length === 2 ? '2-digit' : 'numeric';
+            return '{second}';
 
-                case 'z':
-                    formatObj.timeZoneName = $0.length < 4 ? 'short' : 'long';
-                    return '{timeZoneName}';
-            }
-        });
-
-        // From http://www.unicode.org/reports/tr35/tr35-dates.html#Date_Format_Patterns:
-        //  'In patterns, two single quotes represents a literal single quote, either
-        //   inside or outside single quotes. Text within single quotes is not
-        //   interpreted in any way (except for two adjacent single quotes).'
-        formatObj.pattern = formatObj.pattern.replace(/'([^']*)'/g, function ($0, literal) {
-            return literal ? literal : "'";
-        });
-
-        if (formatObj.pattern.indexOf('{ampm}') > -1) {
-            formatObj.pattern12 = formatObj.pattern;
-            formatObj.pattern = formatObj.pattern.replace('{ampm}', '').trim();
+          case 'z':
+            formatObj.timeZoneName = $0.length < 4 ? 'short' : 'long';
+            return '{timeZoneName}';
         }
+      });
 
-        return formatObj;
+          // From http://www.unicode.org/reports/tr35/tr35-dates.html#Date_Format_Patterns:
+          //  'In patterns, two single quotes represents a literal single quote, either
+          //   inside or outside single quotes. Text within single quotes is not
+          //   interpreted in any way (except for two adjacent single quotes).'
+      formatObj.pattern = formatObj.pattern.replace(/'([^']*)'/g, function ($0, literal) {
+        return literal ? literal : "'";
+      });
+
+      if (formatObj.pattern.indexOf('{ampm}') > -1) {
+        formatObj.pattern12 = formatObj.pattern;
+        formatObj.pattern = formatObj.pattern.replace('{ampm}', '').trim();
+      }
+
+      return formatObj;
     }
 
     function $$cldr$$createDateTimeFormats(formats) {
 
-        var avail = formats.availableFormats;
-        var order = formats.medium;
-        var result = [];
-        var M, E, frmt, dFrmt, computed, i, j;
-        var timeFrmts = [];
-        var dateFrmts = [];
+      var avail = formats.availableFormats;
+      var order = formats.medium;
+      var result = [];
+      var M, E, frmt, dFrmt, computed, i, j;
+      var timeFrmts = [];
+      var dateFrmts = [];
 
-        // Map the formats into a pattern for createDateTimeFormats
-        for (frmt in avail) {
-            if (avail.hasOwnProperty(frmt)) {
-                dFrmt = avail[frmt];
+      // Map the formats into a pattern for createDateTimeFormats
+      for (frmt in avail) {
+        if (avail.hasOwnProperty(frmt)) {
+          dFrmt = avail[frmt];
 
-                // Expand component lengths if necessary, as allowed in the LDML spec
-                // Get the lengths of 'M' and 'E' substrings in the date pattern
-                // as arrays that can be joined to create a new substring
-                M = new Array((frmt.match(/M/g)||[]).length + 1);
-                E = new Array((frmt.match(/E/g)||[]).length + 1);
+          // Expand component lengths if necessary, as allowed in the LDML spec
+          // Get the lengths of 'M' and 'E' substrings in the date pattern
+          // as arrays that can be joined to create a new substring
+          M = new Array((frmt.match(/M/g)||[]).length + 1);
+          E = new Array((frmt.match(/E/g)||[]).length + 1);
 
-                if (M.length > 2)
-                    dFrmt = dFrmt.replace(/(M|L)+/, M.join('$1'));
+          if (M.length > 2)
+            dFrmt = dFrmt.replace(/(M|L)+/, M.join('$1'));
 
-                if (E.length > 2)
-                    dFrmt = dFrmt.replace(/([Eec])+/, E.join('$1'));
+          if (E.length > 2)
+            dFrmt = dFrmt.replace(/([Eec])+/, E.join('$1'));
 
-                computed = $$cldr$$createDateTimeFormat(dFrmt);
+          computed =  $$cldr$$createDateTimeFormat(dFrmt);
 
-                if (computed) {
-                    result.push(computed);
-                    // in some cases, the format is only displaying date specific props
-                    // or time specific props, in which case we need to also produce the
-                    // combined formats.
-                    if ($$cldr$$isDateFormatOnly(computed)) {
-                        dateFrmts.push(dFrmt);
-                    } else if ($$cldr$$isTimeFormatOnly(computed)) {
-                        timeFrmts.push(dFrmt);
-                    }
-                }
+          if (computed) {
+            result.push(computed);
+            // in some cases, the format is only displaying date specific props
+            // or time specific props, in which case we need to also produce the
+            // combined formats.
+            if ( $$cldr$$isDateFormatOnly(computed)) {
+              dateFrmts.push(dFrmt);
+            } else if ( $$cldr$$isTimeFormatOnly(computed)) {
+              timeFrmts.push(dFrmt);
             }
+          }
         }
+      }
 
-        // combine time and date formats when they are orthogonals to complete the
-        // formats supported by browsers by relying on the value of "formats.medium"
-        for (i = 0; i < timeFrmts.length; i += 1) {
-            for (j = 0; j < dateFrmts.length; j += 1) {
-                computed = $$cldr$$createDateTimeFormat(
-                    order
-                        .replace('{0}', timeFrmts[i])
-                        .replace('{1}', dateFrmts[j])
-                        .replace(/^[,\s]+|[,\s]+$/gi, '')
-                );
-                if (computed) {
-                    result.push(computed);
-                }
-            }
+      // combine time and date formats when they are orthogonals to complete the
+      // formats supported by browsers by relying on the value of "formats.medium"
+      for (i = 0; i < timeFrmts.length; i += 1) {
+        for (j = 0; j < dateFrmts.length; j += 1) {
+          computed =  $$cldr$$createDateTimeFormat(
+            order
+            .replace('{0}', timeFrmts[i])
+            .replace('{1}', dateFrmts[j])
+            .replace(/^[,\s]+|[,\s]+$/gi, '')
+          );
+          if (computed) {
+            result.push(computed);
+          }
         }
-        return result;
+      }
+      return result;
     }
 
     var $$core$$Intl = {},
 
         $$core$$realDefineProp = (function () {
-            try { return !!Object.defineProperty({}, 'a', {}); }
-            catch (e) { return false; }
+            var sentinel = {};
+            try {
+                Object.defineProperty(sentinel, 'a', {});
+                return 'a' in sentinel;
+            } catch (e) {
+                return false;
+            }
         })(),
 
         // Need a workaround for getters in ES3
         $$core$$es3  = !$$core$$realDefineProp && !Object.prototype.__defineGetter__,
-
+        $$core$$defineProperty,
+        $$core$$arrIndexOf,
+        $$core$$objCreate,
         // We use this a lot (and need it for proto-less objects)
-        $$core$$hop = Object.prototype.hasOwnProperty,
+        $$core$$hop = Object.prototype.hasOwnProperty;
 
-        // Naive defineProperty for compatibility
-        $$core$$defineProperty = $$core$$realDefineProp ? Object.defineProperty : function (obj, name, desc) {
-            if ('get' in desc && obj.__defineGetter__)
-                obj.__defineGetter__(name, desc.get);
+    try {
+      Object.defineProperty({}, '__testDefineProperty', {});
+      $$core$$defineProperty = Object.defineProperty;
+    }
+    catch (exc) {
+      $$core$$defineProperty = function (obj, name, desc) {
+        if (desc.get && obj.__defineGetter__) {
+          obj.__defineGetter__(name, desc.get);
+        } else if ($$core$$hop.call(desc, 'value')) {
+          obj[name] = desc.value;
+        }
+      };
+    }
 
-            else if (!$$core$$hop.call(obj, name) || 'value' in desc)
-                obj[name] = desc.value;
+
+    try {
+      ['a','b'].indexOf('b');
+      $$core$$arrIndexOf = Array.prototype.indexOf;
+    }
+    catch (exc) {
+      $$core$$arrIndexOf = function (search) {
+          /*jshint validthis:true */
+          var t = this;
+          if (!t.length)
+              return -1;
+
+          for (var i = arguments[1] || 0, max = t.length; i < max; i++) {
+              if (t[i] === search)
+                  return i;
+          }
+
+          return -1;
+      };
+    }
+
+    try {
+      Object.create(Object.prototype, { foo : 'test'});
+      $$core$$objCreate = Object.create;
+    }
+    catch (exc) {
+      $$core$$objCreate = function (proto, props) {
+          var obj;
+
+          function F() {}
+          F.prototype = proto;
+          obj = new F();
+
+          for (var k in props) {
+              if ($$core$$hop.call(props, k))
+                  $$core$$defineProperty(obj, k, props[k]);
+          }
+
+          return obj;
+      };
+    }
+
+
+    // Snapshot some (hopefully still) native built-ins
+    var $$core$$arrSlice  = Array.prototype.slice,
+    $$core$$arrConcat = Array.prototype.concat,
+    $$core$$arrPush   = Array.prototype.push,
+    $$core$$arrJoin   = Array.prototype.join,
+    $$core$$arrShift  = Array.prototype.shift,
+    $$core$$arrUnshift= Array.prototype.unshift,
+    $$core$$fnBind;
+
+    try {
+      var $$core$$testfunc = function () { return this; };
+      $$core$$testfunc.bind({ test: 'test'});
+      $$core$$fnBind = Function.prototype.bind;
+    }
+    catch (exc) {
+      $$core$$fnBind = function (thisObj) {
+          var fn = this,
+              args = $$core$$arrSlice.call(arguments, 1);
+
+          // All our (presently) bound functions have either 1 or 0 arguments. By returning
+          // different function signatures, we can pass some tests in ES3 environments
+          if (fn.length === 1) {
+              return function (a) {
+                  return fn.apply(thisObj, $$core$$arrConcat.call(args, $$core$$arrSlice.call(arguments)));
+              };
+          }
+          else {
+              return function () {
+                  return fn.apply(thisObj, $$core$$arrConcat.call(args, $$core$$arrSlice.call(arguments)));
+              };
+          }
+      };
+    }
+
+    // Default locale is the first-added locale data for us
+    var $$core$$defaultLocale,
+
+    // Object housing internal properties for constructors
+    $$core$$internals = $$core$$objCreate(null),
+
+    // Keep internal properties internal
+    $$core$$secret = Math.random(),
+
+    // An object map of date component keys, saves using a regex later
+    $$core$$dateWidths = $$core$$objCreate(null, { narrow:{}, short:{}, long:{} }),
+
+    // Each constructor prototype should be an instance of the constructor itself, but we
+    // can't initialise them as such until some locale data has been added, so this is how
+    // we keep track
+    $$core$$numberFormatProtoInitialised = false,
+    $$core$$dateTimeFormatProtoInitialised = false,
+
+    // Some regular expressions we're using
+    $$core$$expCurrencyCode = /^[A-Z]{3}$/,
+    $$core$$expUnicodeExSeq = /-u(?:-[0-9a-z]{2,8})+/gi, // See `extension` below
+
+    // IANA Subtag Registry redundant tag and subtag maps
+    $$core$$redundantTags = {
+        tags: {
+            "art-lojban":   "jbo",       "i-ami":        "ami",       "i-bnn":       "bnn",  "i-hak":      "hak",
+            "i-klingon":    "tlh",       "i-lux":        "lb",        "i-navajo":    "nv",   "i-pwn":      "pwn",
+            "i-tao":        "tao",       "i-tay":        "tay",       "i-tsu":       "tsu",  "no-bok":     "nb",
+            "no-nyn":       "nn",        "sgn-BE-FR":    "sfb",       "sgn-BE-NL":   "vgt",  "sgn-CH-DE":  "sgg",
+            "zh-guoyu":     "cmn",       "zh-hakka":     "hak",       "zh-min-nan":  "nan",  "zh-xiang":   "hsn",
+            "sgn-BR":       "bzs",       "sgn-CO":       "csn",       "sgn-DE":      "gsg",  "sgn-DK":     "dsl",
+            "sgn-ES":       "ssp",       "sgn-FR":       "fsl",       "sgn-GB":      "bfi",  "sgn-GR":     "gss",
+            "sgn-IE":       "isg",       "sgn-IT":       "ise",       "sgn-JP":      "jsl",  "sgn-MX":     "mfs",
+            "sgn-NI":       "ncs",       "sgn-NL":       "dse",       "sgn-NO":      "nsl",  "sgn-PT":     "psr",
+            "sgn-SE":       "swl",       "sgn-US":       "ase",       "sgn-ZA":      "sfs",  "zh-cmn":     "cmn",
+            "zh-cmn-Hans":  "cmn-Hans",  "zh-cmn-Hant":  "cmn-Hant",  "zh-gan":      "gan",  "zh-wuu":     "wuu",
+            "zh-yue":       "yue"
         },
-
-        // Array.prototype.indexOf, as good as we need it to be
-        $$core$$arrIndexOf = Array.prototype.indexOf || function (search) {
-            /*jshint validthis:true */
-            var t = this;
-            if (!t.length)
-                return -1;
-
-            for (var i = arguments[1] || 0, max = t.length; i < max; i++) {
-                if (t[i] === search)
-                    return i;
-            }
-
-            return -1;
+        subtags: {
+              BU: "MM",   DD: "DE",   FX: "FR",   TP: "TL",   YD: "YE",   ZR: "CD",  heploc: "alalc97",
+            'in': "id",   iw: "he",   ji:  "yi",  jw: "jv",   mo: "ro",  ayx: "nun", bjd: "drl",
+             ccq: "rki", cjr: "mom", cka: "cmr", cmk: "xch", drh: "khk", drw: "prs", gav: "dev",
+             hrr: "jal", ibi: "opa", kgh: "kml", lcq: "ppr", mst: "mry", myt: "mry", sca: "hle",
+             tie: "ras", tkk: "twm", tlw: "weo", tnf: "prs", ybd: "rki", yma: "lrr"
         },
+        extLang: {
+            aao: [ "aao", "ar"  ], abh: [ "abh", "ar"  ], abv: [ "abv", "ar"  ], acm: [ "acm", "ar"  ],
+            acq: [ "acq", "ar"  ], acw: [ "acw", "ar"  ], acx: [ "acx", "ar"  ], acy: [ "acy", "ar"  ],
+            adf: [ "adf", "ar"  ], ads: [ "ads", "sgn" ], aeb: [ "aeb", "ar"  ], aec: [ "aec", "ar"  ],
+            aed: [ "aed", "sgn" ], aen: [ "aen", "sgn" ], afb: [ "afb", "ar"  ], afg: [ "afg", "sgn" ],
+            ajp: [ "ajp", "ar"  ], apc: [ "apc", "ar"  ], apd: [ "apd", "ar"  ], arb: [ "arb", "ar"  ],
+            arq: [ "arq", "ar"  ], ars: [ "ars", "ar"  ], ary: [ "ary", "ar"  ], arz: [ "arz", "ar"  ],
+            ase: [ "ase", "sgn" ], asf: [ "asf", "sgn" ], asp: [ "asp", "sgn" ], asq: [ "asq", "sgn" ],
+            asw: [ "asw", "sgn" ], auz: [ "auz", "ar"  ], avl: [ "avl", "ar"  ], ayh: [ "ayh", "ar"  ],
+            ayl: [ "ayl", "ar"  ], ayn: [ "ayn", "ar"  ], ayp: [ "ayp", "ar"  ], bbz: [ "bbz", "ar"  ],
+            bfi: [ "bfi", "sgn" ], bfk: [ "bfk", "sgn" ], bjn: [ "bjn", "ms"  ], bog: [ "bog", "sgn" ],
+            bqn: [ "bqn", "sgn" ], bqy: [ "bqy", "sgn" ], btj: [ "btj", "ms"  ], bve: [ "bve", "ms"  ],
+            bvl: [ "bvl", "sgn" ], bvu: [ "bvu", "ms"  ], bzs: [ "bzs", "sgn" ], cdo: [ "cdo", "zh"  ],
+            cds: [ "cds", "sgn" ], cjy: [ "cjy", "zh"  ], cmn: [ "cmn", "zh"  ], coa: [ "coa", "ms"  ],
+            cpx: [ "cpx", "zh"  ], csc: [ "csc", "sgn" ], csd: [ "csd", "sgn" ], cse: [ "cse", "sgn" ],
+            csf: [ "csf", "sgn" ], csg: [ "csg", "sgn" ], csl: [ "csl", "sgn" ], csn: [ "csn", "sgn" ],
+            csq: [ "csq", "sgn" ], csr: [ "csr", "sgn" ], czh: [ "czh", "zh"  ], czo: [ "czo", "zh"  ],
+            doq: [ "doq", "sgn" ], dse: [ "dse", "sgn" ], dsl: [ "dsl", "sgn" ], dup: [ "dup", "ms"  ],
+            ecs: [ "ecs", "sgn" ], esl: [ "esl", "sgn" ], esn: [ "esn", "sgn" ], eso: [ "eso", "sgn" ],
+            eth: [ "eth", "sgn" ], fcs: [ "fcs", "sgn" ], fse: [ "fse", "sgn" ], fsl: [ "fsl", "sgn" ],
+            fss: [ "fss", "sgn" ], gan: [ "gan", "zh"  ], gds: [ "gds", "sgn" ], gom: [ "gom", "kok" ],
+            gse: [ "gse", "sgn" ], gsg: [ "gsg", "sgn" ], gsm: [ "gsm", "sgn" ], gss: [ "gss", "sgn" ],
+            gus: [ "gus", "sgn" ], hab: [ "hab", "sgn" ], haf: [ "haf", "sgn" ], hak: [ "hak", "zh"  ],
+            hds: [ "hds", "sgn" ], hji: [ "hji", "ms"  ], hks: [ "hks", "sgn" ], hos: [ "hos", "sgn" ],
+            hps: [ "hps", "sgn" ], hsh: [ "hsh", "sgn" ], hsl: [ "hsl", "sgn" ], hsn: [ "hsn", "zh"  ],
+            icl: [ "icl", "sgn" ], ils: [ "ils", "sgn" ], inl: [ "inl", "sgn" ], ins: [ "ins", "sgn" ],
+            ise: [ "ise", "sgn" ], isg: [ "isg", "sgn" ], isr: [ "isr", "sgn" ], jak: [ "jak", "ms"  ],
+            jax: [ "jax", "ms"  ], jcs: [ "jcs", "sgn" ], jhs: [ "jhs", "sgn" ], jls: [ "jls", "sgn" ],
+            jos: [ "jos", "sgn" ], jsl: [ "jsl", "sgn" ], jus: [ "jus", "sgn" ], kgi: [ "kgi", "sgn" ],
+            knn: [ "knn", "kok" ], kvb: [ "kvb", "ms"  ], kvk: [ "kvk", "sgn" ], kvr: [ "kvr", "ms"  ],
+            kxd: [ "kxd", "ms"  ], lbs: [ "lbs", "sgn" ], lce: [ "lce", "ms"  ], lcf: [ "lcf", "ms"  ],
+            liw: [ "liw", "ms"  ], lls: [ "lls", "sgn" ], lsg: [ "lsg", "sgn" ], lsl: [ "lsl", "sgn" ],
+            lso: [ "lso", "sgn" ], lsp: [ "lsp", "sgn" ], lst: [ "lst", "sgn" ], lsy: [ "lsy", "sgn" ],
+            ltg: [ "ltg", "lv"  ], lvs: [ "lvs", "lv"  ], lzh: [ "lzh", "zh"  ], max: [ "max", "ms"  ],
+            mdl: [ "mdl", "sgn" ], meo: [ "meo", "ms"  ], mfa: [ "mfa", "ms"  ], mfb: [ "mfb", "ms"  ],
+            mfs: [ "mfs", "sgn" ], min: [ "min", "ms"  ], mnp: [ "mnp", "zh"  ], mqg: [ "mqg", "ms"  ],
+            mre: [ "mre", "sgn" ], msd: [ "msd", "sgn" ], msi: [ "msi", "ms"  ], msr: [ "msr", "sgn" ],
+            mui: [ "mui", "ms"  ], mzc: [ "mzc", "sgn" ], mzg: [ "mzg", "sgn" ], mzy: [ "mzy", "sgn" ],
+            nan: [ "nan", "zh"  ], nbs: [ "nbs", "sgn" ], ncs: [ "ncs", "sgn" ], nsi: [ "nsi", "sgn" ],
+            nsl: [ "nsl", "sgn" ], nsp: [ "nsp", "sgn" ], nsr: [ "nsr", "sgn" ], nzs: [ "nzs", "sgn" ],
+            okl: [ "okl", "sgn" ], orn: [ "orn", "ms"  ], ors: [ "ors", "ms"  ], pel: [ "pel", "ms"  ],
+            pga: [ "pga", "ar"  ], pks: [ "pks", "sgn" ], prl: [ "prl", "sgn" ], prz: [ "prz", "sgn" ],
+            psc: [ "psc", "sgn" ], psd: [ "psd", "sgn" ], pse: [ "pse", "ms"  ], psg: [ "psg", "sgn" ],
+            psl: [ "psl", "sgn" ], pso: [ "pso", "sgn" ], psp: [ "psp", "sgn" ], psr: [ "psr", "sgn" ],
+            pys: [ "pys", "sgn" ], rms: [ "rms", "sgn" ], rsi: [ "rsi", "sgn" ], rsl: [ "rsl", "sgn" ],
+            sdl: [ "sdl", "sgn" ], sfb: [ "sfb", "sgn" ], sfs: [ "sfs", "sgn" ], sgg: [ "sgg", "sgn" ],
+            sgx: [ "sgx", "sgn" ], shu: [ "shu", "ar"  ], slf: [ "slf", "sgn" ], sls: [ "sls", "sgn" ],
+            sqk: [ "sqk", "sgn" ], sqs: [ "sqs", "sgn" ], ssh: [ "ssh", "ar"  ], ssp: [ "ssp", "sgn" ],
+            ssr: [ "ssr", "sgn" ], svk: [ "svk", "sgn" ], swc: [ "swc", "sw"  ], swh: [ "swh", "sw"  ],
+            swl: [ "swl", "sgn" ], syy: [ "syy", "sgn" ], tmw: [ "tmw", "ms"  ], tse: [ "tse", "sgn" ],
+            tsm: [ "tsm", "sgn" ], tsq: [ "tsq", "sgn" ], tss: [ "tss", "sgn" ], tsy: [ "tsy", "sgn" ],
+            tza: [ "tza", "sgn" ], ugn: [ "ugn", "sgn" ], ugy: [ "ugy", "sgn" ], ukl: [ "ukl", "sgn" ],
+            uks: [ "uks", "sgn" ], urk: [ "urk", "ms"  ], uzn: [ "uzn", "uz"  ], uzs: [ "uzs", "uz"  ],
+            vgt: [ "vgt", "sgn" ], vkk: [ "vkk", "ms"  ], vkt: [ "vkt", "ms"  ], vsi: [ "vsi", "sgn" ],
+            vsl: [ "vsl", "sgn" ], vsv: [ "vsv", "sgn" ], wuu: [ "wuu", "zh"  ], xki: [ "xki", "sgn" ],
+            xml: [ "xml", "sgn" ], xmm: [ "xmm", "ms"  ], xms: [ "xms", "sgn" ], yds: [ "yds", "sgn" ],
+            ysl: [ "ysl", "sgn" ], yue: [ "yue", "zh"  ], zib: [ "zib", "sgn" ], zlm: [ "zlm", "ms"  ],
+            zmi: [ "zmi", "ms"  ], zsl: [ "zsl", "sgn" ], zsm: [ "zsm", "ms"  ]
+        }
+    },
 
-        // Create an object with the specified prototype (2nd arg required for Record)
-        $$core$$objCreate = Object.create || function (proto, props) {
-            var obj;
-
-            function F() {}
-            F.prototype = proto;
-            obj = new F();
-
-            for (var k in props) {
-                if ($$core$$hop.call(props, k))
-                    $$core$$defineProperty(obj, k, props[k]);
-            }
-
-            return obj;
-        },
-
-        // Snapshot some (hopefully still) native built-ins
-        $$core$$arrSlice  = Array.prototype.slice,
-        $$core$$arrConcat = Array.prototype.concat,
-        $$core$$arrPush   = Array.prototype.push,
-        $$core$$arrJoin   = Array.prototype.join,
-        $$core$$arrShift  = Array.prototype.shift,
-        $$core$$arrUnshift= Array.prototype.unshift,
-
-        // Naive Function.prototype.bind for compatibility
-        $$core$$fnBind = Function.prototype.bind || function (thisObj) {
-            var fn = this,
-                args = $$core$$arrSlice.call(arguments, 1);
-
-            // All our (presently) bound functions have either 1 or 0 arguments. By returning
-            // different function signatures, we can pass some tests in ES3 environments
-            if (fn.length === 1) {
-                return function (a) {
-                    return fn.apply(thisObj, $$core$$arrConcat.call(args, $$core$$arrSlice.call(arguments)));
-                };
-            }
-            else {
-                return function () {
-                    return fn.apply(thisObj, $$core$$arrConcat.call(args, $$core$$arrSlice.call(arguments)));
-                };
-            }
-        },
-
-        // Default locale is the first-added locale data for us
-        $$core$$defaultLocale,
-
-        // Object housing internal properties for constructors
-        $$core$$internals = $$core$$objCreate(null),
-
-        // Keep internal properties internal
-        $$core$$secret = Math.random(),
-
-        // An object map of date component keys, saves using a regex later
-        $$core$$dateWidths = $$core$$objCreate(null, { narrow:{}, short:{}, long:{} }),
-
-        // Each constructor prototype should be an instance of the constructor itself, but we
-        // can't initialise them as such until some locale data has been added, so this is how
-        // we keep track
-        $$core$$numberFormatProtoInitialised = false,
-        $$core$$dateTimeFormatProtoInitialised = false,
-
-        // Some regular expressions we're using
-        $$core$$expCurrencyCode = /^[A-Z]{3}$/,
-        $$core$$expUnicodeExSeq = /-u(?:-[0-9a-z]{2,8})+/gi, // See `extension` below
-
-        // IANA Subtag Registry redundant tag and subtag maps
-        $$core$$redundantTags = {
-            tags: {
-                "art-lojban":   "jbo",       "i-ami":        "ami",       "i-bnn":       "bnn",  "i-hak":      "hak",
-                "i-klingon":    "tlh",       "i-lux":        "lb",        "i-navajo":    "nv",   "i-pwn":      "pwn",
-                "i-tao":        "tao",       "i-tay":        "tay",       "i-tsu":       "tsu",  "no-bok":     "nb",
-                "no-nyn":       "nn",        "sgn-BE-FR":    "sfb",       "sgn-BE-NL":   "vgt",  "sgn-CH-DE":  "sgg",
-                "zh-guoyu":     "cmn",       "zh-hakka":     "hak",       "zh-min-nan":  "nan",  "zh-xiang":   "hsn",
-                "sgn-BR":       "bzs",       "sgn-CO":       "csn",       "sgn-DE":      "gsg",  "sgn-DK":     "dsl",
-                "sgn-ES":       "ssp",       "sgn-FR":       "fsl",       "sgn-GB":      "bfi",  "sgn-GR":     "gss",
-                "sgn-IE":       "isg",       "sgn-IT":       "ise",       "sgn-JP":      "jsl",  "sgn-MX":     "mfs",
-                "sgn-NI":       "ncs",       "sgn-NL":       "dse",       "sgn-NO":      "nsl",  "sgn-PT":     "psr",
-                "sgn-SE":       "swl",       "sgn-US":       "ase",       "sgn-ZA":      "sfs",  "zh-cmn":     "cmn",
-                "zh-cmn-Hans":  "cmn-Hans",  "zh-cmn-Hant":  "cmn-Hant",  "zh-gan":      "gan",  "zh-wuu":     "wuu",
-                "zh-yue":       "yue"
-            },
-            subtags: {
-                  BU: "MM",   DD: "DE",   FX: "FR",   TP: "TL",   YD: "YE",   ZR: "CD",  heploc: "alalc97",
-                'in': "id",   iw: "he",   ji:  "yi",  jw: "jv",   mo: "ro",  ayx: "nun", bjd: "drl",
-                 ccq: "rki", cjr: "mom", cka: "cmr", cmk: "xch", drh: "khk", drw: "prs", gav: "dev",
-                 hrr: "jal", ibi: "opa", kgh: "kml", lcq: "ppr", mst: "mry", myt: "mry", sca: "hle",
-                 tie: "ras", tkk: "twm", tlw: "weo", tnf: "prs", ybd: "rki", yma: "lrr"
-            },
-            extLang: {
-                aao: [ "aao", "ar"  ], abh: [ "abh", "ar"  ], abv: [ "abv", "ar"  ], acm: [ "acm", "ar"  ],
-                acq: [ "acq", "ar"  ], acw: [ "acw", "ar"  ], acx: [ "acx", "ar"  ], acy: [ "acy", "ar"  ],
-                adf: [ "adf", "ar"  ], ads: [ "ads", "sgn" ], aeb: [ "aeb", "ar"  ], aec: [ "aec", "ar"  ],
-                aed: [ "aed", "sgn" ], aen: [ "aen", "sgn" ], afb: [ "afb", "ar"  ], afg: [ "afg", "sgn" ],
-                ajp: [ "ajp", "ar"  ], apc: [ "apc", "ar"  ], apd: [ "apd", "ar"  ], arb: [ "arb", "ar"  ],
-                arq: [ "arq", "ar"  ], ars: [ "ars", "ar"  ], ary: [ "ary", "ar"  ], arz: [ "arz", "ar"  ],
-                ase: [ "ase", "sgn" ], asf: [ "asf", "sgn" ], asp: [ "asp", "sgn" ], asq: [ "asq", "sgn" ],
-                asw: [ "asw", "sgn" ], auz: [ "auz", "ar"  ], avl: [ "avl", "ar"  ], ayh: [ "ayh", "ar"  ],
-                ayl: [ "ayl", "ar"  ], ayn: [ "ayn", "ar"  ], ayp: [ "ayp", "ar"  ], bbz: [ "bbz", "ar"  ],
-                bfi: [ "bfi", "sgn" ], bfk: [ "bfk", "sgn" ], bjn: [ "bjn", "ms"  ], bog: [ "bog", "sgn" ],
-                bqn: [ "bqn", "sgn" ], bqy: [ "bqy", "sgn" ], btj: [ "btj", "ms"  ], bve: [ "bve", "ms"  ],
-                bvl: [ "bvl", "sgn" ], bvu: [ "bvu", "ms"  ], bzs: [ "bzs", "sgn" ], cdo: [ "cdo", "zh"  ],
-                cds: [ "cds", "sgn" ], cjy: [ "cjy", "zh"  ], cmn: [ "cmn", "zh"  ], coa: [ "coa", "ms"  ],
-                cpx: [ "cpx", "zh"  ], csc: [ "csc", "sgn" ], csd: [ "csd", "sgn" ], cse: [ "cse", "sgn" ],
-                csf: [ "csf", "sgn" ], csg: [ "csg", "sgn" ], csl: [ "csl", "sgn" ], csn: [ "csn", "sgn" ],
-                csq: [ "csq", "sgn" ], csr: [ "csr", "sgn" ], czh: [ "czh", "zh"  ], czo: [ "czo", "zh"  ],
-                doq: [ "doq", "sgn" ], dse: [ "dse", "sgn" ], dsl: [ "dsl", "sgn" ], dup: [ "dup", "ms"  ],
-                ecs: [ "ecs", "sgn" ], esl: [ "esl", "sgn" ], esn: [ "esn", "sgn" ], eso: [ "eso", "sgn" ],
-                eth: [ "eth", "sgn" ], fcs: [ "fcs", "sgn" ], fse: [ "fse", "sgn" ], fsl: [ "fsl", "sgn" ],
-                fss: [ "fss", "sgn" ], gan: [ "gan", "zh"  ], gds: [ "gds", "sgn" ], gom: [ "gom", "kok" ],
-                gse: [ "gse", "sgn" ], gsg: [ "gsg", "sgn" ], gsm: [ "gsm", "sgn" ], gss: [ "gss", "sgn" ],
-                gus: [ "gus", "sgn" ], hab: [ "hab", "sgn" ], haf: [ "haf", "sgn" ], hak: [ "hak", "zh"  ],
-                hds: [ "hds", "sgn" ], hji: [ "hji", "ms"  ], hks: [ "hks", "sgn" ], hos: [ "hos", "sgn" ],
-                hps: [ "hps", "sgn" ], hsh: [ "hsh", "sgn" ], hsl: [ "hsl", "sgn" ], hsn: [ "hsn", "zh"  ],
-                icl: [ "icl", "sgn" ], ils: [ "ils", "sgn" ], inl: [ "inl", "sgn" ], ins: [ "ins", "sgn" ],
-                ise: [ "ise", "sgn" ], isg: [ "isg", "sgn" ], isr: [ "isr", "sgn" ], jak: [ "jak", "ms"  ],
-                jax: [ "jax", "ms"  ], jcs: [ "jcs", "sgn" ], jhs: [ "jhs", "sgn" ], jls: [ "jls", "sgn" ],
-                jos: [ "jos", "sgn" ], jsl: [ "jsl", "sgn" ], jus: [ "jus", "sgn" ], kgi: [ "kgi", "sgn" ],
-                knn: [ "knn", "kok" ], kvb: [ "kvb", "ms"  ], kvk: [ "kvk", "sgn" ], kvr: [ "kvr", "ms"  ],
-                kxd: [ "kxd", "ms"  ], lbs: [ "lbs", "sgn" ], lce: [ "lce", "ms"  ], lcf: [ "lcf", "ms"  ],
-                liw: [ "liw", "ms"  ], lls: [ "lls", "sgn" ], lsg: [ "lsg", "sgn" ], lsl: [ "lsl", "sgn" ],
-                lso: [ "lso", "sgn" ], lsp: [ "lsp", "sgn" ], lst: [ "lst", "sgn" ], lsy: [ "lsy", "sgn" ],
-                ltg: [ "ltg", "lv"  ], lvs: [ "lvs", "lv"  ], lzh: [ "lzh", "zh"  ], max: [ "max", "ms"  ],
-                mdl: [ "mdl", "sgn" ], meo: [ "meo", "ms"  ], mfa: [ "mfa", "ms"  ], mfb: [ "mfb", "ms"  ],
-                mfs: [ "mfs", "sgn" ], min: [ "min", "ms"  ], mnp: [ "mnp", "zh"  ], mqg: [ "mqg", "ms"  ],
-                mre: [ "mre", "sgn" ], msd: [ "msd", "sgn" ], msi: [ "msi", "ms"  ], msr: [ "msr", "sgn" ],
-                mui: [ "mui", "ms"  ], mzc: [ "mzc", "sgn" ], mzg: [ "mzg", "sgn" ], mzy: [ "mzy", "sgn" ],
-                nan: [ "nan", "zh"  ], nbs: [ "nbs", "sgn" ], ncs: [ "ncs", "sgn" ], nsi: [ "nsi", "sgn" ],
-                nsl: [ "nsl", "sgn" ], nsp: [ "nsp", "sgn" ], nsr: [ "nsr", "sgn" ], nzs: [ "nzs", "sgn" ],
-                okl: [ "okl", "sgn" ], orn: [ "orn", "ms"  ], ors: [ "ors", "ms"  ], pel: [ "pel", "ms"  ],
-                pga: [ "pga", "ar"  ], pks: [ "pks", "sgn" ], prl: [ "prl", "sgn" ], prz: [ "prz", "sgn" ],
-                psc: [ "psc", "sgn" ], psd: [ "psd", "sgn" ], pse: [ "pse", "ms"  ], psg: [ "psg", "sgn" ],
-                psl: [ "psl", "sgn" ], pso: [ "pso", "sgn" ], psp: [ "psp", "sgn" ], psr: [ "psr", "sgn" ],
-                pys: [ "pys", "sgn" ], rms: [ "rms", "sgn" ], rsi: [ "rsi", "sgn" ], rsl: [ "rsl", "sgn" ],
-                sdl: [ "sdl", "sgn" ], sfb: [ "sfb", "sgn" ], sfs: [ "sfs", "sgn" ], sgg: [ "sgg", "sgn" ],
-                sgx: [ "sgx", "sgn" ], shu: [ "shu", "ar"  ], slf: [ "slf", "sgn" ], sls: [ "sls", "sgn" ],
-                sqk: [ "sqk", "sgn" ], sqs: [ "sqs", "sgn" ], ssh: [ "ssh", "ar"  ], ssp: [ "ssp", "sgn" ],
-                ssr: [ "ssr", "sgn" ], svk: [ "svk", "sgn" ], swc: [ "swc", "sw"  ], swh: [ "swh", "sw"  ],
-                swl: [ "swl", "sgn" ], syy: [ "syy", "sgn" ], tmw: [ "tmw", "ms"  ], tse: [ "tse", "sgn" ],
-                tsm: [ "tsm", "sgn" ], tsq: [ "tsq", "sgn" ], tss: [ "tss", "sgn" ], tsy: [ "tsy", "sgn" ],
-                tza: [ "tza", "sgn" ], ugn: [ "ugn", "sgn" ], ugy: [ "ugy", "sgn" ], ukl: [ "ukl", "sgn" ],
-                uks: [ "uks", "sgn" ], urk: [ "urk", "ms"  ], uzn: [ "uzn", "uz"  ], uzs: [ "uzs", "uz"  ],
-                vgt: [ "vgt", "sgn" ], vkk: [ "vkk", "ms"  ], vkt: [ "vkt", "ms"  ], vsi: [ "vsi", "sgn" ],
-                vsl: [ "vsl", "sgn" ], vsv: [ "vsv", "sgn" ], wuu: [ "wuu", "zh"  ], xki: [ "xki", "sgn" ],
-                xml: [ "xml", "sgn" ], xmm: [ "xmm", "ms"  ], xms: [ "xms", "sgn" ], yds: [ "yds", "sgn" ],
-                ysl: [ "ysl", "sgn" ], yue: [ "yue", "zh"  ], zib: [ "zib", "sgn" ], zlm: [ "zlm", "ms"  ],
-                zmi: [ "zmi", "ms"  ], zsl: [ "zsl", "sgn" ], zsm: [ "zsm", "ms"  ]
-            }
-        },
-
-        // Currency minor units output from tools/getISO4217data.js, formatted
-        $$core$$currencyMinorUnits = {
-            BHD: 3, BYR: 0, XOF: 0, BIF: 0, XAF: 0, CLF: 0, CLP: 0, KMF: 0, DJF: 0,
-            XPF: 0, GNF: 0, ISK: 0, IQD: 3, JPY: 0, JOD: 3, KRW: 0, KWD: 3, LYD: 3,
-            OMR: 3, PYG: 0, RWF: 0, TND: 3, UGX: 0, UYI: 0, VUV: 0, VND: 0
-        };
+    // Currency minor units output from tools/getISO4217data.js, formatted
+    $$core$$currencyMinorUnits = {
+        BHD: 3, BYR: 0, XOF: 0, BIF: 0, XAF: 0, CLF: 0, CLP: 0, KMF: 0, DJF: 0,
+        XPF: 0, GNF: 0, ISK: 0, IQD: 3, JPY: 0, JOD: 3, KRW: 0, KWD: 3, LYD: 3,
+        OMR: 3, PYG: 0, RWF: 0, TND: 3, UGX: 0, UYI: 0, VUV: 0, VND: 0
+    };
 
     // Sect 6.2 Language Tags
     // ======================

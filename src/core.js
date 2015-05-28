@@ -35,79 +35,105 @@ var Intl = {},
 
     // Need a workaround for getters in ES3
     es3  = !realDefineProp && !Object.prototype.__defineGetter__,
-
+    defineProperty,
+    arrIndexOf,
+    objCreate,
     // We use this a lot (and need it for proto-less objects)
-    hop = Object.prototype.hasOwnProperty,
+    hop = Object.prototype.hasOwnProperty;
 
-    // Naive defineProperty for compatibility
-    defineProperty = realDefineProp ? Object.defineProperty : function (obj, name, desc) {
-        if ('get' in desc && obj.__defineGetter__)
-            obj.__defineGetter__(name, desc.get);
-
-        else if (!hop.call(obj, name) || 'value' in desc)
-            obj[name] = desc.value;
-    },
-
-    // Array.prototype.indexOf, as good as we need it to be
-    arrIndexOf = Array.prototype.indexOf || function (search) {
-        /*jshint validthis:true */
-        var t = this;
-        if (!t.length)
-            return -1;
-
-        for (var i = arguments[1] || 0, max = t.length; i < max; i++) {
-            if (t[i] === search)
-                return i;
+    try {
+      Object.defineProperty({}, '__testDefineProperty', {});
+      defineProperty = Object.defineProperty;
+    }
+    catch (exc) {
+      defineProperty = function (obj, name, desc) {
+        if (desc.get && obj.__defineGetter__) {
+          obj.__defineGetter__(name, desc.get);
+        } else if (hop.call(desc, 'value')) {
+          obj[name] = desc.value;
         }
+      };
+    }
 
-        return -1;
-    },
 
-    // Create an object with the specified prototype (2nd arg required for Record)
-    objCreate = Object.create || function (proto, props) {
-        var obj;
+    try {
+      ['a','b'].indexOf('b');
+      arrIndexOf = Array.prototype.indexOf;
+    }
+    catch (exc) {
+      arrIndexOf = function (search) {
+          /*jshint validthis:true */
+          var t = this;
+          if (!t.length)
+              return -1;
 
-        function F() {}
-        F.prototype = proto;
-        obj = new F();
+          for (var i = arguments[1] || 0, max = t.length; i < max; i++) {
+              if (t[i] === search)
+                  return i;
+          }
 
-        for (var k in props) {
-            if (hop.call(props, k))
-                defineProperty(obj, k, props[k]);
-        }
+          return -1;
+      };
+    }
 
-        return obj;
-    },
+    try {
+      Object.create(Object.prototype, { foo : 'test'});
+      objCreate = Object.create;
+    }
+    catch (exc) {
+      objCreate = function (proto, props) {
+          var obj;
+
+          function F() {}
+          F.prototype = proto;
+          obj = new F();
+
+          for (var k in props) {
+              if (hop.call(props, k))
+                  defineProperty(obj, k, props[k]);
+          }
+
+          return obj;
+      };
+    }
+
 
     // Snapshot some (hopefully still) native built-ins
-    arrSlice  = Array.prototype.slice,
+    var arrSlice  = Array.prototype.slice,
     arrConcat = Array.prototype.concat,
     arrPush   = Array.prototype.push,
     arrJoin   = Array.prototype.join,
     arrShift  = Array.prototype.shift,
     arrUnshift= Array.prototype.unshift,
+    fnBind;
 
-    // Naive Function.prototype.bind for compatibility
-    fnBind = Function.prototype.bind || function (thisObj) {
-        var fn = this,
-            args = arrSlice.call(arguments, 1);
+    try {
+      var testfunc = function () { return this; };
+      testfunc.bind({ test: 'test'});
+      fnBind = Function.prototype.bind;
+    }
+    catch (exc) {
+      fnBind = function (thisObj) {
+          var fn = this,
+              args = arrSlice.call(arguments, 1);
 
-        // All our (presently) bound functions have either 1 or 0 arguments. By returning
-        // different function signatures, we can pass some tests in ES3 environments
-        if (fn.length === 1) {
-            return function (a) {
-                return fn.apply(thisObj, arrConcat.call(args, arrSlice.call(arguments)));
-            };
-        }
-        else {
-            return function () {
-                return fn.apply(thisObj, arrConcat.call(args, arrSlice.call(arguments)));
-            };
-        }
-    },
+          // All our (presently) bound functions have either 1 or 0 arguments. By returning
+          // different function signatures, we can pass some tests in ES3 environments
+          if (fn.length === 1) {
+              return function (a) {
+                  return fn.apply(thisObj, arrConcat.call(args, arrSlice.call(arguments)));
+              };
+          }
+          else {
+              return function () {
+                  return fn.apply(thisObj, arrConcat.call(args, arrSlice.call(arguments)));
+              };
+          }
+      };
+    }
 
     // Default locale is the first-added locale data for us
-    defaultLocale,
+    var defaultLocale,
 
     // Object housing internal properties for constructors
     internals = objCreate(null),

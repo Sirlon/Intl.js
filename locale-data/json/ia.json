@@ -106,13 +106,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -196,13 +196,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -278,13 +278,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -371,13 +371,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -453,13 +453,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -549,13 +549,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -639,13 +639,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -732,13 +732,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -837,13 +837,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -927,13 +927,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -1017,13 +1017,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -1107,13 +1107,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -1197,13 +1197,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -1992,13 +1992,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
@@ -2082,13 +2082,13 @@
                 },
                 "days": {
                     "narrow": [
-                        "dom",
-                        "lun",
-                        "mar",
-                        "mer",
-                        "jov",
-                        "ven",
-                        "sab"
+                        "S",
+                        "M",
+                        "T",
+                        "W",
+                        "T",
+                        "F",
+                        "S"
                     ],
                     "short": [
                         "dom",
