@@ -14,4 +14,4 @@ if (!global.Intl) {
 // providing an idiomatic api for the nodejs version of this module
 module.exports = exports = IntlPolyfill;
 // preserving the original api in case another module is relying on that
-exports.default = IntlPolyfill;
+exports['default'] = IntlPolyfill;
