@@ -1,6 +1,6 @@
-/* jslint esnext: true */
 
-import IntlPolyfill from "./core";
+
+var IntlPolyfill = require('./core');
 
 // hack to export the polyfill as global Intl if needed
 if (!this.Intl) {
@@ -8,4 +8,4 @@ if (!this.Intl) {
     IntlPolyfill.__applyLocaleSensitivePrototypes();
 }
 
-export default IntlPolyfill;
+module.exports = IntlPolyfill;

@@ -10,16 +10,15 @@
  */
 /*jshint esnext: true, proto:true, eqnull:true, boss:true, laxbreak:true, newcap:false, shadow:true, funcscope:true */
 
-import {
-    expBCP47Syntax,
-    expExtSequences,
-    expVariantDupes,
-    expSingletonDupes
-} from './exp';
+var exp = require('./exp'),
+    expBCP47Syntax = exp.expBCP47Syntax,
+    expExtSequences = exp.expExtSequences,
+    expVariantDupes = exp.expVariantDupes,
+    expSingletonDupes = exp.expSingletonDupes;
 
-import {
-    createDateTimeFormats
-} from "./cldr";
+
+createDateTimeFormats = require('./cldr').createDateTimeFormats;
+
 
 var Intl = {},
 
@@ -2994,4 +2993,4 @@ function getInternalProperties (obj) {
         return objCreate(null);
 }
 
-export default Intl;
+module.exports = Intl;

@@ -57,7 +57,7 @@ module.exports = function (grunt) {
             src: {
                 expand : true,
                 flatten: true,
-                src    : ['tmp/src/*.js'],
+                src    : ['src/*.js'],
                 dest   : 'lib/'
             }
         },
@@ -73,15 +73,12 @@ module.exports = function (grunt) {
             all: ['index.js', 'src/*.js', '*.json']
         },
 
-        bundle_jsnext: {
-            dest: 'dist/Intl.js',
-            options: {
-                namespace: 'IntlPolyfill'
+        browserify: {
+          dist: {
+            files: {
+              'dist/Intl.js': ['src/main.js'],
             }
-        },
-
-        cjs_jsnext: {
-            dest: 'tmp/'
+          }
         },
 
         uglify: {
@@ -103,13 +100,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-bundle-jsnext-lib');
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-extract-cldr-data');
     grunt.loadNpmTasks('grunt-curl');
     grunt.loadNpmTasks('grunt-zip');
 
     grunt.registerTask('build', [
-        'bundle_jsnext', 'uglify', 'cjs_jsnext', 'copy:src', 'concat:complete'
+        'browserify', 'uglify', 'copy:src', 'concat:complete'
     ]);
 
     grunt.registerTask('cldr', ['extract-cldr-data', 'compile-data']);

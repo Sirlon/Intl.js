@@ -89,16 +89,18 @@ var
     langtag = language + '(?:-' + script + ')?(?:-' + region + ')?(?:-'
             + variant + ')*(?:-' + extension + ')*(?:-' + privateuse + ')?';
 
+module.exports = {
 // Language-Tag  = langtag             ; normal language tags
 //               / privateuse          ; private use tag
 //               / grandfathered       ; grandfathered tags
-export var expBCP47Syntax = RegExp('^(?:'+langtag+'|'+privateuse+'|'+grandfathered+')$', 'i');
+  expBCP47Syntax : RegExp('^(?:'+langtag+'|'+privateuse+'|'+grandfathered+')$', 'i'),
 
 // Match duplicate variants in a language tag
-export var expVariantDupes = RegExp('^(?!x).*?-('+variant+')-(?:\\w{4,8}-(?!x-))*\\1\\b', 'i');
+  expVariantDupes : RegExp('^(?!x).*?-('+variant+')-(?:\\w{4,8}-(?!x-))*\\1\\b', 'i'),
 
 // Match duplicate singletons in a language tag (except in private use)
-export var expSingletonDupes = RegExp('^(?!x).*?-('+singleton+')-(?:\\w+-(?!x-))*\\1\\b', 'i');
+  expSingletonDupes : RegExp('^(?!x).*?-('+singleton+')-(?:\\w+-(?!x-))*\\1\\b', 'i'),
 
 // Match all extension sequences
-export var expExtSequences = RegExp('-'+extension, 'ig');
+  expExtSequences : RegExp('-'+extension, 'ig')
+};

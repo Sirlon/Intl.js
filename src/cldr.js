@@ -1,4 +1,4 @@
-/* jshint esnext: true, laxbreak:true */
+/* laxbreak:true */
 var  expDTComponents = /(?:[Eec]{1,6}|G{1,5}|(?:[yYu]+|U{1,5})|[ML]{1,5}|d{1,2}|a|[hkHK]{1,2}|m{1,2}|s{1,2}|z{1,4})(?=([^']*'[^']*')*[^']*$)/g;
 
 // Skip over patterns with these datetime components
@@ -110,7 +110,7 @@ function  createDateTimeFormat(format) {
   return formatObj;
 }
 
-export  function createDateTimeFormats(formats) {
+function createDateTimeFormats(formats) {
 
   var avail = formats.availableFormats;
   var order = formats.medium;
@@ -169,3 +169,7 @@ export  function createDateTimeFormats(formats) {
   }
   return result;
 }
+
+module.export = {
+  createDateTimeFormats : createDateTimeFormats
+};
